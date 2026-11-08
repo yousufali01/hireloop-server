@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 import { MongoClient } from "mongodb";
-import 'dotenv/config';
+import "dotenv/config";
 
 // middleware
 app.use(cors());
@@ -13,8 +13,7 @@ app.use(express.json());
 const client = new MongoClient(
   `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.et7c49i.mongodb.net/`,
 );
-console.log(client);
-
+// console.log(client);
 
 export async function connectToMongoDB() {
   try {
@@ -28,8 +27,18 @@ export async function connectToMongoDB() {
 
 const connectedClient = await connectToMongoDB();
 
+const database = connectedClient.db("hireloop");
+const usersCollection = database.collection("user");
+const jobsCollection = database.collection("jobs");
+
 app.get("/", (req, res) => {
   res.send("Hire loop server is running.......!");
+});
+
+app.get("/users", async (req, res) => {
+  const cursor = usersCollection.find({});
+  const result = await cursor.toArray();
+  res.send(result);
 });
 
 app.listen(port, () => {

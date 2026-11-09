@@ -47,6 +47,21 @@ app.get("/users", async (req, res) => {
   res.send(result);
 });
 
+// Get all jobs
+app.get("/jobs", async (req, res) => {
+  try {
+    const cursor = jobsCollection.find({});
+    const result = await cursor.toArray();
+    res.send(result);
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: "Failed to fetch jobs!",
+      error: err.message,
+    });
+  }
+});
+
 // Post a new job
 app.post("/jobs", async (req, res) => {
   try {
